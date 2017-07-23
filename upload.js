@@ -49,12 +49,14 @@ function S3MultiUpload(file, conf) {
 	var self = this;
 	var initiateS3MultipartUpload = function() {
 		state = self.consts.PREPARING;
+		console.log(config.SERVER_LOC);
 		$.ajax({
 			url: config.SERVER_LOC,
 			type: "GET",
 			data: {command: 'CreateMultipartUpload', fileInfo: fileInfo},
 			success: function(data, status, jqXHR) {
 				s3Key = data.key;
+				console.log(data);
 				$.ajax({
 					url: data.url,
 					type: "POST",
