@@ -1,5 +1,5 @@
 <?php
-define('AWS_KEY', 'AKIAJ6JSJIO3U7H6JOUA');
-define('AWS_SECRET', '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');
-define('BUCKET_NAME', 'imgnpro');
-define('BASE_S3_PATH', '/multipartuploads/');
+define('AWS_KEY', $_ENV["AWS_KEY"]);
+define('AWS_SECRET', $_ENV["AWS_SECRET"]);
+define('BUCKET_NAME', $_ENV["BUCKET_NAME"]);
+define('BASE_S3_PATH', $_ENV["BASE_S3_PATH"]);
