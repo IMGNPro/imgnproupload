@@ -244,7 +244,7 @@ S3MultiUpload.prototype.consts = {
 S3MultiUpload.prototype.defaultConfig = {
 	PART_SIZE: 5 * 1024 * 1024, //minimum part size defined by aws s3
 	SERVER_LOC: 'server.php', //location of the server
-	MAX_PARALLEL_UPLOADS: 2,
+	MAX_PARALLEL_UPLOADS: 4,
 	onServerError: function(){},
 	onProgressChanged: function(){},
 	onUploadCompleted: function(){}
