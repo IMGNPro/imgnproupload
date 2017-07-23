@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Upload To S3</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <p>
+            Select file and press upload<input type="file" id="file">
+            <button onclick="upload('user', 'pass')">Upload</button>
+            <button onclick="upload('user', 'pass1')">Not authorized Upload</button>
+        </p>
+        <p>
+            <button onclick="pause()">Pause</button>
+            <button onclick="resume()">Resume</button>
+            <button onclick="cancel()">Cancel</button>
+        </p>
+        <p>
+            <progress id="uploading_progress" value="0" max="100"></progress>
+            <br>
+            <progress id="uploaded_progress" value="0" max="100"></progress>
+            <br>
+            <progress id="summed_progress" value="0" max="100"></progress>
+        </p>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+        <script src="upload.js"></script>
+        <script>
+                var s3upload = null;
+
+                function pause() {
+                    s3upload.pause();
+                }
+
+                function resume() {
+                    s3upload.resume();
+                }
+
+                function cancel() {
+                    s3upload.cancel();
+                    s3upload = null;
+                }
+
+                function upload(user, pass) {
+                    var file = $('#file')[0].files[0];
+                    s3upload = new S3MultiUpload(file, {
+					onServerError: function(command, jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status === 403) {
+                            alert("Sorry you are not allowed to upload");
+                        } else {
+                            console.log("Our server is not responding correctly");
+                        }
+					},
+					onS3UploadError: function(xhr) {
+                        s3upload.waitRetry();
+                        alert("Upload is failing, we will retry in " + s3upload.RETRY_WAIT_SEC + " seconds");
+                    },
+                    onProgressChanged: function(uploadingSize, uploadedSize, totalSize) {
+                        $('#uploading_progress').attr('value', uploadingSize);
+                        $('#uploaded_progress').attr('value', uploadedSize);
+                        $('#summed_progress').attr('value', uploadedSize + uploadingSize);
+                        console.log("progress", uploadingSize, uploadedSize, totalSize);
+                    },
+                    onUploadCompleted: function() {
+                        alert("Congratz, upload is complete now");
+                    }
+                    });
+                    s3upload.start();
+                }
+        </script>
+    </body>
+</html>
